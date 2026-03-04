@@ -32,7 +32,6 @@ import {
   IconSearch,
   IconFilter,
   IconActivity,
-  IconEyeOpened,
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
@@ -282,7 +281,7 @@ const ListingsGrid = () => {
                 </Text>
                 <Space vertical align="start" spacing={2} style={{ width: '100%', marginTop: 8 }}>
                   <Text type="secondary" icon={<IconCart />} size="small">
-                    {item.price} €
+                    {Number(item.price).toLocaleString('de-DE')} €
                   </Text>
                   <Text
                     type="secondary"
@@ -317,13 +316,9 @@ const ListingsGrid = () => {
                     </a>
                   </div>
 
-                  <Button
-                    type="secondary"
-                    size="small"
-                    title="View Details"
-                    onClick={() => navigate(`/listings/listing/${item.id}`)}
-                    icon={<IconEyeOpened />}
-                  />
+                  <Button type="secondary" size="small" onClick={() => navigate(`/listings/listing/${item.id}`)}>
+                    Details
+                  </Button>
 
                   <Button
                     title="Remove"

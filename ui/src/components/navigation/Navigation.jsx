@@ -77,6 +77,11 @@ export default function Navigation({ isAdmin }) {
       onSelect={(key) => {
         navigate(key.itemKey);
       }}
+      onClick={({ itemKey }) => {
+        if (itemKey && itemKey.startsWith('/')) {
+          navigate(itemKey);
+        }
+      }}
       header={<img src={collapsed ? heart : logoWhite} width={collapsed ? '30' : '120'} alt="Fredy Logo" />}
       footer={
         <Nav.Footer className="navigate__footer">

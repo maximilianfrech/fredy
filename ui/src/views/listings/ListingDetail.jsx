@@ -269,7 +269,7 @@ export default function ListingDetail() {
       value: listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1),
       Icon: <IconBriefcase />,
     },
-    { key: 'Price', value: `${listing.price} €`, Icon: <IconCart /> },
+    { key: 'Price', value: `${Number(listing.price).toLocaleString('de-DE')} €`, Icon: <IconCart /> },
     {
       key: 'Size',
       value: listing.size ? `${listing.size} m²` : 'N/A',
@@ -285,7 +285,7 @@ export default function ListingDetail() {
   return (
     <div className="listing-detail">
       <div className="listing-detail__back">
-        <Button icon={<IconArrowLeft />} onClick={() => navigate(-1)} theme="borderless">
+        <Button icon={<IconArrowLeft />} onClick={() => navigate('/listings')} theme="borderless">
           Back
         </Button>
       </div>
