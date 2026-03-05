@@ -20,6 +20,7 @@ import {
   Banner,
   Spin,
   Toast,
+  Table,
 } from '@douyinfe/semi-ui-19';
 import {
   IconArrowLeft,
@@ -28,7 +29,7 @@ import {
   IconClock,
   IconBriefcase,
   IconActivity,
-  IconLink,
+  IconExternalOpen,
   IconStar,
   IconStarStroked,
   IconRealSize,
@@ -315,9 +316,6 @@ export default function ListingDetail() {
             >
               {listing.isWatched === 1 ? 'Watched' : 'Watch'}
             </Button>
-            <Text link={{ href: listing.link, target: '_blank' }} icon={<IconLink />} underline>
-              Open listing
-            </Text>
           </Space>
         </div>
 
@@ -368,6 +366,49 @@ export default function ListingDetail() {
             </div>
           </Col>
         </Row>
+      </Card>
+
+      <Card className="listing-detail__card" style={{ marginTop: '1.5rem' }}>
+        <Title heading={4} style={{ marginBottom: '1rem' }}>
+          Listings
+        </Title>
+        <Table
+          dataSource={[
+            {
+              key: listing.id,
+              platform: listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1),
+              link: listing.link,
+            },
+            ...(listing.similarListings || []).map((sl) => ({
+              key: sl.id,
+              platform: sl.provider.charAt(0).toUpperCase() + sl.provider.slice(1),
+              link: sl.link,
+            })),
+          ]}
+          columns={[
+            {
+              title: 'Platform',
+              dataIndex: 'platform',
+            },
+            {
+              title: '',
+              dataIndex: 'link',
+              width: 120,
+              render: (link) => (
+                <Button
+                  icon={<IconExternalOpen />}
+                  theme="borderless"
+                  onClick={() => window.open(link, '_blank')}
+                  size="small"
+                >
+                  Open
+                </Button>
+              ),
+            },
+          ]}
+          pagination={false}
+          size="small"
+        />
       </Card>
 
       <div className="listing-detail__map-wrapper">
