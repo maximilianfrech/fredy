@@ -84,3 +84,18 @@ React 19 + Vite + Semi UI component library + Zustand for state. MapLibre GL for
 - **SegmentParts** (`components/segment/`): Rounded card wrapper used for form sections and grouped content. Uses `height: 100%` to match sibling heights in grid rows.
 - **Containers**: Wrap standalone tables/content in `SegmentPart` or Semi UI `Card`. Avoid bare `<Table>` without a styled container.
 - **Inline styles**: Avoid inline `style={{}}` for layout (margins, padding). Use `.less` classes instead.
+- **CSS naming**: BEM convention — `.component`, `.component__element`, `.component--modifier`
+
+## Frontend Key Details
+
+- **Router**: `HashRouter` (URLs are `#/path`). Routes defined in `App.jsx`. `useSearchParams` works with HashRouter since React Router 6.4+.
+- **Semi UI version**: `@douyinfe/semi-ui-19` v2.91.0 — imported as `@douyinfe/semi-ui-19` (not `@douyinfe/semi-ui`)
+- **Semi Icons**: `@douyinfe/semi-icons` — available icons include `IconGridView1`, `IconList`, `IconFilter`, `IconSearch`, `IconStar`, `IconStarStroked`, `IconExternalOpen`, `IconDelete`, `IconArrowLeft`, etc.
+- **State management**: Zustand v5 (`ui/src/services/state/store.js`). Custom hooks: `useSelector()`, `useActions()`, `useIsLoading()`. Actions organized by domain (dashboard, listingsData, provider, jobsData, user, etc.).
+- **XHR helpers**: `xhrGet`, `xhrPost`, `xhrDelete`, `xhrPut` from `ui/src/services/xhr.js`
+- **Time formatting**: `ui/src/services/time/timeService.js` — `format(timestamp, includeTime?)` for German locale date formatting
+- **Copyright header**: All source files require a copyright comment block. The pre-commit hook checks this automatically.
+- **Listings API** (`/api/listings/table`): Supports server-side pagination, sorting (`sortfield`/`sortdir`), and filtering (`freeTextFilter`, `activityFilter`, `watchListFilter`, `providerFilter`, `jobNameFilter`). Returns `{ totalNumber, page, result }`.
+- **Listing fields**: id, created_at, provider, job_id, job_name, price, size, title, image_url, description, address, link, latitude, longitude, distance_to_destination, is_active, isWatched, manually_deleted, similarity_hash
+- **Component file locations**: Tables in `ui/src/components/table/`, grid views in `ui/src/components/grid/`, modals/shared components in `ui/src/components/`, view pages in `ui/src/views/`
+- **Illustrations**: `@douyinfe/semi-illustrations` provides `IllustrationNoResult` / `IllustrationNoResultDark` for empty states

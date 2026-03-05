@@ -286,7 +286,7 @@ export default function ListingDetail() {
   return (
     <div className="listing-detail">
       <div className="listing-detail__back">
-        <Button icon={<IconArrowLeft />} onClick={() => navigate('/listings')} theme="borderless">
+        <Button icon={<IconArrowLeft />} onClick={() => navigate(-1)} theme="borderless">
           Back
         </Button>
       </div>
