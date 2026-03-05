@@ -243,7 +243,19 @@ const ListingsGrid = () => {
             <Card
               className={`listingsGrid__card ${!item.is_active ? 'listingsGrid__card--inactive' : ''}`}
               style={{ cursor: 'pointer' }}
-              onClick={() => navigate(`/listings/listing/${item.id}`)}
+              onClick={(e) => {
+                if (e.ctrlKey || e.metaKey) {
+                  window.open(`#/listings/listing/${item.id}`, '_blank');
+                } else {
+                  navigate(`/listings/listing/${item.id}`);
+                }
+              }}
+              onMouseDown={(e) => {
+                if (e.button === 1) {
+                  e.preventDefault();
+                  window.open(`#/listings/listing/${item.id}`, '_blank');
+                }
+              }}
               cover={
                 <div style={{ position: 'relative' }}>
                   <div className="listingsGrid__imageContainer">
