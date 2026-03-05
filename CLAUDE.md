@@ -74,3 +74,13 @@ React 19 + Vite + Semi UI component library + Zustand for state. MapLibre GL for
 - Database migrations are versioned numerically in `lib/services/storage/migrations/`
 - The similarity cache (`lib/services/similarity-check/`) deduplicates listings across providers using title/address/price comparison
 - Docker build uses system Chromium instead of bundled Puppeteer Chromium
+
+## UI Styling Conventions
+
+- **Dark theme**: Background `#232429`, cards `rgba(36, 36, 36, 0.9)`, borders `#323232`
+- **Border radius**: Use `0.9rem` consistently for cards, tables, and container elements
+- **Spacing**: Rely on Semi UI `Row`/`Col` `gutter` props for grid spacing — do not add extra margins on child elements (e.g. `SegmentParts`, `DashboardCard`) that conflict with the gutter system
+- **Tables**: Global rounded styling is applied via `.semi-table-wrapper` in `Index.less`. Tables inside `SegmentPart` or `Card` wrappers inherit rounding from their container.
+- **SegmentParts** (`components/segment/`): Rounded card wrapper used for form sections and grouped content. Uses `height: 100%` to match sibling heights in grid rows.
+- **Containers**: Wrap standalone tables/content in `SegmentPart` or Semi UI `Card`. Avoid bare `<Table>` without a styled container.
+- **Inline styles**: Avoid inline `style={{}}` for layout (margins, padding). Use `.less` classes instead.
