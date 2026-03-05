@@ -368,7 +368,7 @@ export default function ListingDetail() {
         </Row>
       </Card>
 
-      <Card className="listing-detail__card" style={{ marginTop: '1.5rem' }}>
+      <Card className="listing-detail__card">
         <Title heading={4} style={{ marginBottom: '1rem' }}>
           Listings
         </Title>
