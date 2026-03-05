@@ -1,0 +1,21 @@
+services:
+  fredy:
+    container_name: fredy-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./lib:/fredy/lib
+      - ./ui/src:/fredy/ui/src
+      - ./index.js:/fredy/index.js
+      - ./index.html:/fredy/index.html
+      - ./vite.config.js:/fredy/vite.config.js
+      - ./conf:/fredy/conf
+      - ./db:/fredy/db
+    ports:
+      - "9998:9998"
+      - "5173:5173"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
