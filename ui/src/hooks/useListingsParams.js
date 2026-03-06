@@ -16,6 +16,10 @@ const DEFAULTS = {
   watched: '',
   provider: '',
   job: '',
+  priceMin: '',
+  priceMax: '',
+  sizeMin: '',
+  sizeMax: '',
 };
 
 const PAGE_SIZE = 40;
@@ -31,6 +35,10 @@ function parseParams(searchParams) {
     watched: searchParams.get('watched') || DEFAULTS.watched,
     provider: searchParams.get('provider') || DEFAULTS.provider,
     job: searchParams.get('job') || DEFAULTS.job,
+    priceMin: searchParams.get('priceMin') || DEFAULTS.priceMin,
+    priceMax: searchParams.get('priceMax') || DEFAULTS.priceMax,
+    sizeMin: searchParams.get('sizeMin') || DEFAULTS.sizeMin,
+    sizeMax: searchParams.get('sizeMax') || DEFAULTS.sizeMax,
   };
 }
 
@@ -79,9 +87,26 @@ export default function useListingsParams() {
         watchListFilter: toBoolOrNull(params.watched),
         providerFilter: params.provider || null,
         jobNameFilter: params.job || null,
+        priceMin: params.priceMin ? parseInt(params.priceMin, 10) : null,
+        priceMax: params.priceMax ? parseInt(params.priceMax, 10) : null,
+        sizeMin: params.sizeMin ? parseInt(params.sizeMin, 10) : null,
+        sizeMax: params.sizeMax ? parseInt(params.sizeMax, 10) : null,
       },
     }),
-    [params.page, params.sort, params.dir, params.q, params.status, params.watched, params.provider, params.job],
+    [
+      params.page,
+      params.sort,
+      params.dir,
+      params.q,
+      params.status,
+      params.watched,
+      params.provider,
+      params.job,
+      params.priceMin,
+      params.priceMax,
+      params.sizeMin,
+      params.sizeMax,
+    ],
   );
 
   return { params, setParams, apiParams, pageSize: PAGE_SIZE };

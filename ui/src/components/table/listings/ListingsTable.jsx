@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useMemo, useCallback } from 'react';
+import { useCallback } from 'react';
 import { Table, Button, Tag, Space } from '@douyinfe/semi-ui-19';
 import {
   IconExternalOpen,
@@ -20,11 +20,7 @@ import './ListingsTable.less';
 
 const cap = (val) => String(val).charAt(0).toUpperCase() + String(val).slice(1);
 
-const ListingsTable = ({ listings = [], params, setParams, providers, jobs, onWatch, onDelete, onNavigate }) => {
-  const providerFilters = useMemo(() => (providers || []).map((p) => ({ text: p.name, value: p.id })), [providers]);
-
-  const jobFilters = useMemo(() => (jobs || []).map((j) => ({ text: j.name, value: j.id })), [jobs]);
-
+const ListingsTable = ({ listings = [], params, setParams, onWatch, onDelete, onNavigate }) => {
   const handleSort = useCallback(
     (field) => {
       setParams((prev) => {
@@ -115,9 +111,6 @@ const ListingsTable = ({ listings = [], params, setParams, providers, jobs, onWa
       dataIndex: 'provider',
       width: 130,
       onHeaderCell: sortHeaderCell('provider'),
-      filters: providerFilters,
-      filteredValue: params.provider ? [params.provider] : [],
-      onFilter: () => true,
       render: (val) => cap(val),
     },
     {
@@ -125,9 +118,6 @@ const ListingsTable = ({ listings = [], params, setParams, providers, jobs, onWa
       dataIndex: 'job_name',
       width: 140,
       onHeaderCell: sortHeaderCell('job_name'),
-      filters: jobFilters,
-      filteredValue: params.job ? [params.job] : [],
-      onFilter: () => true,
       ellipsis: { showTitle: true },
     },
     {
@@ -148,12 +138,6 @@ const ListingsTable = ({ listings = [], params, setParams, providers, jobs, onWa
       dataIndex: 'is_active',
       width: 90,
       onHeaderCell: sortHeaderCell('is_active'),
-      filters: [
-        { text: 'Active', value: 'true' },
-        { text: 'Inactive', value: 'false' },
-      ],
-      filteredValue: params.status ? [params.status] : [],
-      onFilter: () => true,
       render: (val) => (
         <Tag color={val ? 'green' : 'grey'} size="small">
           {val ? 'Active' : 'Inactive'}
@@ -165,12 +149,6 @@ const ListingsTable = ({ listings = [], params, setParams, providers, jobs, onWa
       dataIndex: 'isWatched',
       width: 90,
       onHeaderCell: sortHeaderCell('isWatched'),
-      filters: [
-        { text: 'Yes', value: 'true' },
-        { text: 'No', value: 'false' },
-      ],
-      filteredValue: params.watched ? [params.watched] : [],
-      onFilter: () => true,
       render: (val) =>
         val === 1 ? (
           <IconStar style={{ color: 'rgba(var(--semi-green-5), 1)' }} />
@@ -218,23 +196,6 @@ const ListingsTable = ({ listings = [], params, setParams, providers, jobs, onWa
     },
   ];
 
-  const handleChange = ({ filters, extra }) => {
-    const updates = { page: 1 };
-
-    if (extra?.changeType === 'filter' && Array.isArray(filters)) {
-      const filterMap = {};
-      for (const f of filters) {
-        if (f.dataIndex) filterMap[f.dataIndex] = f.filteredValue;
-      }
-      if ('provider' in filterMap) updates.provider = filterMap.provider?.[0] || '';
-      if ('job_name' in filterMap) updates.job = filterMap.job_name?.[0] || '';
-      if ('is_active' in filterMap) updates.status = filterMap.is_active?.[0] || '';
-      if ('isWatched' in filterMap) updates.watched = filterMap.isWatched?.[0] || '';
-    }
-
-    setParams((prev) => ({ ...prev, ...updates }));
-  };
-
   return (
     <Table
       className="listingsTable"
@@ -243,7 +204,6 @@ const ListingsTable = ({ listings = [], params, setParams, providers, jobs, onWa
       rowKey="id"
       pagination={false}
       scroll={{ x: 1400 }}
-      onChange={handleChange}
       onRow={(record) => ({
         className: !record.is_active ? 'listingsTable__row--inactive' : '',
         style: { cursor: 'pointer' },

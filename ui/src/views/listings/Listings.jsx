@@ -3,9 +3,10 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   Input,
+  InputNumber,
   Button,
   ButtonGroup,
   Space,
@@ -17,7 +18,7 @@ import {
   Popover,
   Empty,
 } from '@douyinfe/semi-ui-19';
-import { IconSearch, IconFilter, IconGridView1, IconList } from '@douyinfe/semi-icons';
+import { IconSearch, IconFilter, IconGridView1, IconList, IconChevronDown, IconClear } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import debounce from 'lodash/debounce';
@@ -29,6 +30,91 @@ import { useActions, useSelector } from '../../services/state/store.js';
 import useListingsParams from '../../hooks/useListingsParams.js';
 
 const { Text } = Typography;
+
+function RangeFilter({ label, minValue, maxValue, onUpdate, suffix = '' }) {
+  const [localMin, setLocalMin] = useState(minValue || '');
+  const [localMax, setLocalMax] = useState(maxValue || '');
+
+  const onUpdateRef = useRef(onUpdate);
+  onUpdateRef.current = onUpdate;
+
+  const debouncedApply = useMemo(() => debounce((min, max) => onUpdateRef.current(min, max), 600), []);
+
+  useEffect(() => () => debouncedApply.cancel(), [debouncedApply]);
+
+  useEffect(() => {
+    setLocalMin(minValue || '');
+  }, [minValue]);
+  useEffect(() => {
+    setLocalMax(maxValue || '');
+  }, [maxValue]);
+
+  const handleMinChange = (val) => {
+    const v = val === null || val === undefined ? '' : String(val);
+    setLocalMin(v);
+    debouncedApply(v, localMax);
+  };
+  const handleMaxChange = (val) => {
+    const v = val === null || val === undefined ? '' : String(val);
+    setLocalMax(v);
+    debouncedApply(localMin, v);
+  };
+
+  const handleClear = (e) => {
+    e.stopPropagation();
+    setLocalMin('');
+    setLocalMax('');
+    debouncedApply.cancel();
+    onUpdateRef.current('', '');
+  };
+
+  const fmt = (v) => (v === '' ? '–' : Number(v).toLocaleString('de-DE'));
+
+  const hasValue = localMin !== '' || localMax !== '';
+  const displayText = hasValue ? `${fmt(localMin)}${suffix} – ${fmt(localMax)}${suffix}` : 'All';
+
+  return (
+    <div className="listingsGrid__tableFilter__field">
+      <Text size="small" type="tertiary">
+        {label}
+      </Text>
+      <Popover
+        trigger="click"
+        position="bottomLeft"
+        content={
+          <div className="listingsGrid__tableFilter__range">
+            <InputNumber
+              placeholder="Min"
+              size="small"
+              value={localMin === '' ? null : Number(localMin)}
+              onChange={handleMinChange}
+              style={{ width: 90 }}
+              min={0}
+            />
+            <span>–</span>
+            <InputNumber
+              placeholder="Max"
+              size="small"
+              value={localMax === '' ? null : Number(localMax)}
+              onChange={handleMaxChange}
+              style={{ width: 90 }}
+              min={0}
+            />
+          </div>
+        }
+      >
+        <div className="listingsGrid__tableFilter__rangeButton">
+          <span>{displayText}</span>
+          {hasValue ? (
+            <IconClear size="small" className="listingsGrid__tableFilter__rangeClear" onClick={handleClear} />
+          ) : (
+            <IconChevronDown size="small" />
+          )}
+        </div>
+      </Popover>
+    </div>
+  );
+}
 
 export default function Listings() {
   const listingsData = useSelector((state) => state.listingsData);
@@ -136,6 +222,109 @@ export default function Listings() {
           </Popover>
         )}
       </div>
+
+      {!isCardView && (
+        <div className="listingsGrid__tableFilter">
+          <div className="listingsGrid__tableFilter__header">
+            <IconFilter style={{ color: 'white' }} />
+            <Text strong>Filter</Text>
+          </div>
+          <div className="listingsGrid__tableFilter__selects">
+            <div className="listingsGrid__tableFilter__field">
+              <Text size="small" type="tertiary">
+                Job Name
+              </Text>
+              <Select
+                className="listingsGrid__tableFilter__select"
+                placeholder="All"
+                size="small"
+                showClear
+                onChange={(val) => setParams({ job: val || '', page: 1 })}
+                value={params.job || undefined}
+              >
+                {jobs?.map((j) => (
+                  <Select.Option key={j.id} value={j.id}>
+                    {j.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+            <RangeFilter
+              label="Size"
+              minValue={params.sizeMin}
+              maxValue={params.sizeMax}
+              onUpdate={(min, max) => setParams({ sizeMin: min, sizeMax: max, page: 1 })}
+              suffix="m²"
+            />
+            <RangeFilter
+              label="Price"
+              minValue={params.priceMin}
+              maxValue={params.priceMax}
+              onUpdate={(min, max) => setParams({ priceMin: min, priceMax: max, page: 1 })}
+              suffix="€"
+            />
+            <div className="listingsGrid__tableFilter__field">
+              <Text size="small" type="tertiary">
+                Status
+              </Text>
+              <Select
+                className="listingsGrid__tableFilter__select"
+                placeholder="All"
+                size="small"
+                showClear
+                dropdownStyle={{ width: 'auto', minWidth: 'auto' }}
+                position="bottomLeft"
+                onChange={(val) => setParams({ status: val === true ? 'true' : val === false ? 'false' : '', page: 1 })}
+                value={params.status === 'true' ? true : params.status === 'false' ? false : undefined}
+              >
+                <Select.Option value={true}>Active</Select.Option>
+                <Select.Option value={false}>Not Active</Select.Option>
+              </Select>
+            </div>
+            <div className="listingsGrid__tableFilter__field">
+              <Text size="small" type="tertiary">
+                Provider
+              </Text>
+              <Select
+                className="listingsGrid__tableFilter__select"
+                placeholder="All"
+                size="small"
+                showClear
+                dropdownStyle={{ width: 'auto', minWidth: 'auto' }}
+                position="bottomLeft"
+                onChange={(val) => setParams({ provider: val || '', page: 1 })}
+                value={params.provider || undefined}
+              >
+                {providers?.map((p) => (
+                  <Select.Option key={p.id} value={p.id}>
+                    {p.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+            <div className="listingsGrid__tableFilter__field">
+              <Text size="small" type="tertiary">
+                Watchlist
+              </Text>
+              <Select
+                className="listingsGrid__tableFilter__select"
+                placeholder="All"
+                size="small"
+                showClear
+                dropdownStyle={{ width: 'auto', minWidth: 'auto' }}
+                position="bottomLeft"
+                onChange={(val) =>
+                  setParams({ watched: val === true ? 'true' : val === false ? 'false' : '', page: 1 })
+                }
+                value={params.watched === 'true' ? true : params.watched === 'false' ? false : undefined}
+              >
+                <Select.Option value={true}>Watched</Select.Option>
+                <Select.Option value={false}>Not Watched</Select.Option>
+              </Select>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isCardView && showFilterBar && (
         <div className="listingsGrid__toolbar">
@@ -252,8 +441,6 @@ export default function Listings() {
           listings={listings}
           params={params}
           setParams={setParams}
-          providers={providers}
-          jobs={jobs}
           onWatch={handleWatch}
           onDelete={handleDelete}
           onNavigate={handleNavigateToDetail}

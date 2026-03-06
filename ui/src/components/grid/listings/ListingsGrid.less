@@ -104,6 +104,78 @@
     justify-content: center;
   }
 
+  &__tableFilter {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: rgba(36, 36, 36, 0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid #323232;
+    border-radius: 0.9rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+
+    &__header {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+
+    &__selects {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    &__field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    &__select {
+      min-width: 140px;
+    }
+
+    &__rangeButton {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      min-width: 140px;
+      height: 24px;
+      padding: 0 4px 0 8px;
+      background: var(--semi-color-fill-0);
+      border: 1px solid var(--semi-color-border);
+      border-radius: var(--semi-border-radius-small);
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--semi-color-text-0);
+      white-space: nowrap;
+
+      &:hover {
+        border-color: var(--semi-color-primary);
+      }
+    }
+
+    &__rangeClear {
+      margin-left: auto;
+      color: var(--semi-color-text-2);
+      flex-shrink: 0;
+
+      &:hover {
+        color: var(--semi-color-text-0);
+      }
+    }
+
+    &__range {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+    }
+  }
+
   &__toolbar {
     &__card {
       border-radius: var(--semi-border-radius-medium);
