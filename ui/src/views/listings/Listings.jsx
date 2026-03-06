@@ -125,6 +125,14 @@ export default function Listings() {
 
   const { params, setParams, apiParams, pageSize } = useListingsParams();
 
+  const filteredProviders = useMemo(() => {
+    if (!jobs?.length) return providers || [];
+    const selectedJob = params.job ? jobs.find((j) => j.id === params.job) : null;
+    const jobsToScan = selectedJob ? [selectedJob] : jobs;
+    const ids = new Set(jobsToScan.flatMap((j) => (j.provider || []).map((p) => p.id)));
+    return (providers || []).filter((p) => ids.has(p.id));
+  }, [providers, jobs, params.job]);
+
   const [showFilterBar, setShowFilterBar] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
@@ -236,10 +244,11 @@ export default function Listings() {
               </Text>
               <Select
                 className="listingsGrid__tableFilter__select"
+                dropdownClassName="listingsGrid__tableFilter__selectDropdown"
                 placeholder="All"
                 size="small"
                 showClear
-                onChange={(val) => setParams({ job: val || '', page: 1 })}
+                onChange={(val) => setParams({ job: val || '', provider: '', page: 1 })}
                 value={params.job || undefined}
               >
                 {jobs?.map((j) => (
@@ -269,11 +278,10 @@ export default function Listings() {
               </Text>
               <Select
                 className="listingsGrid__tableFilter__select"
+                dropdownClassName="listingsGrid__tableFilter__selectDropdown"
                 placeholder="All"
                 size="small"
                 showClear
-                dropdownStyle={{ width: 'auto', minWidth: 'auto' }}
-                position="bottomLeft"
                 onChange={(val) => setParams({ status: val === true ? 'true' : val === false ? 'false' : '', page: 1 })}
                 value={params.status === 'true' ? true : params.status === 'false' ? false : undefined}
               >
@@ -287,15 +295,14 @@ export default function Listings() {
               </Text>
               <Select
                 className="listingsGrid__tableFilter__select"
+                dropdownClassName="listingsGrid__tableFilter__selectDropdown"
                 placeholder="All"
                 size="small"
                 showClear
-                dropdownStyle={{ width: 'auto', minWidth: 'auto' }}
-                position="bottomLeft"
                 onChange={(val) => setParams({ provider: val || '', page: 1 })}
                 value={params.provider || undefined}
               >
-                {providers?.map((p) => (
+                {filteredProviders.map((p) => (
                   <Select.Option key={p.id} value={p.id}>
                     {p.name}
                   </Select.Option>
@@ -308,11 +315,10 @@ export default function Listings() {
               </Text>
               <Select
                 className="listingsGrid__tableFilter__select"
+                dropdownClassName="listingsGrid__tableFilter__selectDropdown"
                 placeholder="All"
                 size="small"
                 showClear
-                dropdownStyle={{ width: 'auto', minWidth: 'auto' }}
-                position="bottomLeft"
                 onChange={(val) =>
                   setParams({ watched: val === true ? 'true' : val === false ? 'false' : '', page: 1 })
                 }

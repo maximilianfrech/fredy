@@ -219,6 +219,7 @@ export default function JobMutator() {
               multiple
               placeholder="Search user"
               autoClearSearchValue={false}
+              dropdownStyle={{ width: '25rem' }}
               defaultValue={shareWithUsers}
               onChange={(value) => setShareWithUsers(value)}
             >

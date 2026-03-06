@@ -138,6 +138,15 @@
       min-width: 140px;
     }
 
+    // Dropdown is a portal at <body>, so target via dropdownClassName
+    &__selectDropdown .semi-select-option-icon {
+      display: none;
+    }
+
+    &__selectDropdown .semi-select-option-list {
+      max-height: 290px;
+    }
+
     &__rangeButton {
       display: flex;
       align-items: center;

@@ -7,7 +7,7 @@ import { useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const DEFAULTS = {
-  view: 'card',
+  view: 'table',
   page: '1',
   sort: 'created_at',
   dir: 'desc',
