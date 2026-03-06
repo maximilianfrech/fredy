@@ -13,6 +13,7 @@ import {
   IconCaretup,
   IconCaretdown,
 } from '@douyinfe/semi-icons';
+import no_image from '../../../assets/no_image.jpg';
 import * as timeService from '../../../services/time/timeService.js';
 
 import './ListingsTable.less';
@@ -65,6 +66,21 @@ const ListingsTable = ({ listings = [], params, setParams, providers, jobs, onWa
   );
 
   const columns = [
+    {
+      title: '',
+      dataIndex: 'image_url',
+      width: 52,
+      render: (val) => (
+        <img
+          className="listingsTable__thumbnail"
+          src={val || no_image}
+          onError={(e) => {
+            e.target.src = no_image;
+          }}
+          alt=""
+        />
+      ),
+    },
     {
       title: sortableTitle('Title', 'title'),
       dataIndex: 'title',

@@ -9,7 +9,11 @@ Fredy is a self-hosted real estate listing aggregator for Germany. It scrapes pl
 ## Commands
 
 ```bash
-# Development
+# Development (Docker)
+docker compose -f docker-compose.dev.yml up --build   # Runs backend + Vite dev server in container
+# Ports: 9998 (API), 5173 (Vite). Source dirs are bind-mounted for hot reload.
+
+# Development (local)
 yarn start:backend:dev        # Backend with hot reload (nodemon), port 9998
 yarn start:frontend:dev       # Vite dev server (proxies /api to :9998)
 
